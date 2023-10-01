@@ -187,6 +187,13 @@ func TestValueValidation(t *testing.T) {
 		t.Errorf("got wrong value wanted %t", want)
 	}
 
+	number = "null"
+	index = 0
+	want = true
+	if want != valueValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+
 	number = "Atrue"
 	index = 0
 	want = false
@@ -195,6 +202,13 @@ func TestValueValidation(t *testing.T) {
 	}
 
 	number = "\"test"
+	index = 0
+	want = false
+	if want != valueValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+
+	number = "nul"
 	index = 0
 	want = false
 	if want != valueValidation(&index, &number) {

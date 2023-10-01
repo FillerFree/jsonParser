@@ -68,6 +68,10 @@ func valueValidation(index *int, jsonString *string) bool {
 		return boolValidation(index, jsonString)
 	}
 
+	if (*jsonString)[*index] == 'n' {
+		return checkAgainstString(index, jsonString, "null")
+	}
+
 	return checkNumber(index, jsonString)
 }
 
