@@ -143,3 +143,61 @@ func TestStringValidation(t *testing.T) {
 		t.Errorf("got wrong value wanted %t", want)
 	}
 }
+
+func TestParenthesisValidation(t *testing.T) {
+	number := "{}"
+	index := 0
+	want := true
+	if want != parenthesisValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+	number = "{n"
+	index = 0
+	want = false
+	if want != parenthesisValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+}
+
+func TestValueValidation(t *testing.T) {
+	number := "\"test\""
+	index := 0
+	want := true
+	if want != valueValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+	number = "123"
+	index = 0
+	want = true
+	if want != valueValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+
+	number = "123A"
+	index = 0
+	want = true
+	if want != valueValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+
+	number = "true"
+	index = 0
+	want = true
+	if want != valueValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+
+	number = "Atrue"
+	index = 0
+	want = false
+	if want != valueValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+
+	number = "\"test"
+	index = 0
+	want = false
+	if want != valueValidation(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+}
