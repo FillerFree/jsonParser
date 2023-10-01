@@ -10,7 +10,7 @@ func main() {
 
 func initialValidation(jsonString string) bool {
 	index := 0
-	return parenthesisValidation(&index, &jsonString) && stringValidation(&index, &jsonString) && colonValidation(&index, &jsonString) && valueValidation(&index, &jsonString)
+	return parenthesisValidation(&index, &jsonString) && stringValidation(&index, &jsonString) && charValidation(&index, &jsonString, ':') && valueValidation(&index, &jsonString)
 }
 
 func parenthesisValidation(index *int, jsonString *string) bool {
@@ -44,22 +44,22 @@ func stringValidation(index *int, jsonString *string) bool {
 	return true
 }
 
-func colonValidation(index *int, jsonString *string) bool {
-	if !((*jsonString)[0] == ':') {
+func charValidation(index *int, jsonString *string, char uint8) bool {
+	if *index >= len(*jsonString) {
+		return false
+	}
+
+	if (*jsonString)[0] != char {
 		return false
 	}
 	*index++
-	return false
+	return true
 }
 
 func valueValidation(index *int, jsonString *string) bool {
 	if *index >= len(*jsonString) {
 		return false
 	}
-	if (*jsonString)[*index] == '"' {
-		return stringValidation(index, jsonString)
-	}
-
 	if (*jsonString)[*index] == '"' {
 		return stringValidation(index, jsonString)
 	}
@@ -90,9 +90,9 @@ func checkAgainstString(index *int, jsonString *string, str string) bool {
 
 	for _, char := range str {
 		if *index >= len(*jsonString) || uint8(char) != (*jsonString)[*index] {
-			*index++
 			return false
 		}
+		*index++
 	}
 
 	return true
@@ -102,11 +102,11 @@ func checkNumber(index *int, jsonString *string) bool {
 	if *index >= len(*jsonString) {
 		return false
 	}
-	if val := int((*jsonString)[*index]); !(int('a') >= val && val >= int('z')) {
+	if val := int((*jsonString)[*index]); !(int('0') <= val && val <= int('9')) {
 		return false
 	}
 	for *index < len(*jsonString) {
-		if val := int((*jsonString)[*index]); int('a') >= val && val >= int('z') {
+		if val := int((*jsonString)[*index]); int('0') <= val && val <= int('9') {
 			break
 		}
 		*index++
