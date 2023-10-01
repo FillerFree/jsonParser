@@ -8,9 +8,36 @@ func main() {
 	fmt.Println(initialValidation("{key:12\"}"))
 }
 
+func validateJsonObject(index *int, jsonString *string) bool {
+	if !parenthesisValidation(index, jsonString) {
+		return false
+	}
+	for true {
+		if !stringValidation(index, jsonString) {
+			return false
+		}
+		if !charValidation(index, jsonString, ':') {
+			return false
+		}
+
+		if !valueValidation(index, jsonString) {
+			return false
+		}
+		if !charValidation(index, jsonString, ',') {
+			break
+		}
+	}
+
+	if !charValidation(index, jsonString, '}') {
+		return false
+	}
+
+	return true
+}
+
 func initialValidation(jsonString string) bool {
 	index := 0
-	return parenthesisValidation(&index, &jsonString) && stringValidation(&index, &jsonString) && charValidation(&index, &jsonString, ':') && valueValidation(&index, &jsonString)
+	return validateJsonObject(&index, &jsonString)
 }
 
 func parenthesisValidation(index *int, jsonString *string) bool {
@@ -41,6 +68,8 @@ func stringValidation(index *int, jsonString *string) bool {
 			return false
 		}
 	}
+	// We need to move string after " so that it can match next value
+	*index++
 	return true
 }
 
@@ -49,7 +78,7 @@ func charValidation(index *int, jsonString *string, char uint8) bool {
 		return false
 	}
 
-	if (*jsonString)[0] != char {
+	if (*jsonString)[*index] != char {
 		return false
 	}
 	*index++

@@ -215,3 +215,12 @@ func TestValueValidation(t *testing.T) {
 		t.Errorf("got wrong value wanted %t", want)
 	}
 }
+
+func TestValidateJsonObject(t *testing.T) {
+	number := "{\"key\":true,\"key\":null,\"key\":true}"
+	index := 0
+	want := true
+	if want != validateJsonObject(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+}
