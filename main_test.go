@@ -217,10 +217,42 @@ func TestValueValidation(t *testing.T) {
 }
 
 func TestValidateJsonObject(t *testing.T) {
-	number := "{\"key\":true,\"key\":null,\"key\":true}"
+	number := "{\"key1\":true,\"key2\":null,\"key3\":true}"
 	index := 0
 	want := true
 	if want != validateJsonObject(&index, &number) {
 		t.Errorf("got wrong value wanted %t", want)
+	}
+
+	number = "{ \"key1\" : true , \"key2\"  :null ,\"key3\" : true }"
+	index = 0
+	want = true
+	if want != validateJsonObject(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+
+	// Duplicate key
+	number = "{ \"key\" : true1 , \"key\"  :null ,\"key\" : true }"
+	index = 0
+	want = false
+	if want != validateJsonObject(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+
+	number = "{ \"key1\" : true1 , \"key2\"  :null ,\"ke3y\" : true }"
+	index = 0
+	want = false
+	if want != validateJsonObject(&index, &number) {
+		t.Errorf("got wrong value wanted %t", want)
+	}
+}
+
+func TestSkipSpaces(t *testing.T) {
+	number := "   test"
+	index := 0
+	want := 3
+	skipSpaces(&index, &number)
+	if want != index {
+		t.Errorf("got wrong value wanted %d got index %d", want, index)
 	}
 }

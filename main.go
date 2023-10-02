@@ -12,22 +12,35 @@ func validateJsonObject(index *int, jsonString *string) bool {
 	if !parenthesisValidation(index, jsonString) {
 		return false
 	}
+	duplicateKey := map[string]bool{}
+	prevIndex := 0
 	for true {
+		skipSpaces(index, jsonString)
+		prevIndex = *index
 		if !stringValidation(index, jsonString) {
 			return false
 		}
+		// Used to validate duplicate key.
+		if _, ok := duplicateKey[(*jsonString)[prevIndex:*index]]; ok {
+			return false
+		}
+		duplicateKey[(*jsonString)[prevIndex:*index]] = true
+
+		skipSpaces(index, jsonString)
 		if !charValidation(index, jsonString, ':') {
 			return false
 		}
-
+		skipSpaces(index, jsonString)
 		if !valueValidation(index, jsonString) {
 			return false
 		}
+		skipSpaces(index, jsonString)
 		if !charValidation(index, jsonString, ',') {
 			break
 		}
 	}
 
+	skipSpaces(index, jsonString)
 	if !charValidation(index, jsonString, '}') {
 		return false
 	}
@@ -146,4 +159,16 @@ func checkNumber(index *int, jsonString *string) bool {
 	}
 
 	return true
+}
+
+func skipSpaces(index *int, jsonString *string) {
+	if *index >= len(*jsonString) {
+		return
+	}
+	for (*jsonString)[*index] == uint8(' ') {
+		*index += 1
+		if *index >= len(*jsonString) || (*jsonString)[*index] != uint8(' ') {
+			return
+		}
+	}
 }
